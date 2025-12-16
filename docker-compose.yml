@@ -9,12 +9,11 @@ services:
       - "8000:8000"
     volumes:
       - ./backend/uploads:/app/uploads
-    environment:
-      - GEMINI_API_KEY=${GEMINI_API_KEY}
-      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+    env_file:
+      - ./backend/.env
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/health')"]
+      test: [ "CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/health')" ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -23,15 +22,14 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:8000
     ports:
       - "3000:3000"
-    environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:8000
-    depends_on:
       - backend
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000"]
+      test: [ "CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000" ]
       interval: 30s
       timeout: 10s
       retries: 3
