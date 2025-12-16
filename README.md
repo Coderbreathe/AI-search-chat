@@ -69,6 +69,8 @@ Server streams events:
 12. done → Stream complete
 ```
 
+<img width="1919" height="1013" alt="image" src="https://github.com/user-attachments/assets/a75a07ce-59de-4984-8ea3-110afdef0a28" />
+
 ## 🚀 Setup Instructions
 
 ### Prerequisites
@@ -368,4 +370,5 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 - Google Gemini for powerful AI capabilities
 - Next.js team for an amazing framework
 - FastAPI for elegant Python APIs
+
 - Hugging Face for sentence-transformers
