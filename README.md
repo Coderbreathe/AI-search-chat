@@ -68,6 +68,9 @@ Server streams events:
 11. text → "the answer is..." (chunked)
 12. done → Stream complete
 ```
+
+## Video Tutorial (Loom)
+https://www.loom.com/share/28bfd53dda274d9d87636c1a9a08f8d2
 ## Screenshots
 
 <img width="1919" height="1013" alt="image" src="https://github.com/user-attachments/assets/a75a07ce-59de-4984-8ea3-110afdef0a28" />
@@ -379,4 +382,5 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 - FastAPI for elegant Python APIs
 
 - Hugging Face for sentence-transformers
+
 
