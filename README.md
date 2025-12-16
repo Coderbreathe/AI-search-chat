@@ -2,6 +2,7 @@
 
 A modern, full-stack RAG (Retrieval-Augmented Generation) application that enables intelligent conversations with your PDF documents. Built with Next.js, FastAPI, and Google Gemini AI.
 
+
 ## ✨ Features
 
 - **📄 PDF Upload & Processing**: Upload multiple PDF documents with automatic text extraction
@@ -68,7 +69,10 @@ Server streams events:
 11. text → "the answer is..." (chunked)
 12. done → Stream complete
 ```
-
+## Total Time Taken
+   Start Time: 9:30am
+   End Time: 12:00am
+   
 ## Video Tutorial (Loom)
 https://www.loom.com/share/28bfd53dda274d9d87636c1a9a08f8d2
 ## Screenshots
@@ -382,5 +386,6 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 - FastAPI for elegant Python APIs
 
 - Hugging Face for sentence-transformers
+
 
 
