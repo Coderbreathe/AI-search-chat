@@ -6,6 +6,8 @@ import { SourceCard } from './SourceCard'
 import { CitationBadge } from './CitationBadge'
 import ToolCallIndicator from './ToolCallIndicator'
 import ComponentRenderer from './generative/ComponentRenderer'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 
 interface MessageBubbleProps {
   message: Message
@@ -14,20 +16,42 @@ interface MessageBubbleProps {
 export default function MessageBubble({ message, onCitationClick }: MessageBubbleProps & { onCitationClick?: (source: Source) => void }) {
   const isUser = message.role === 'user'
 
-  // Helper to parse content with citations
-  const renderContent = (content: string, sources: Source[] = []) => {
-    // Regex to match [1], [2], etc.
-    const parts = content.split(/(\[\d+\])/g)
+  // Helper to preprocess content for citations
+  // Converts [1] to brackets with a custom protocol we can intercept: [1](#citation-1)
+  const preprocessContent = (content: string) => {
+    return content.replace(/\[(\d+)\]/g, '[$1](#citation-$1)')
+  }
 
-    return parts.map((part, i) => {
-      const match = part.match(/\[(\d+)\]/)
-      if (match) {
-        const id = parseInt(match[1])
-        const source = sources.find(s => s.id === id)
-        return <CitationBadge key={i} id={id} source={source} onClick={onCitationClick} />
+  // Custom renderer for links to handle citations
+  const components = {
+    a: ({ href, children, ...props }: any) => {
+      if (href?.startsWith('#citation-')) {
+        const id = parseInt(href.replace('#citation-', ''))
+        const source = message.sources?.find(s => s.id === id)
+        return <CitationBadge id={id} source={source} onClick={onCitationClick} />
       }
-      return <span key={i}>{part}</span>
-    })
+      return <a href={href} {...props} target="_blank" rel="noopener noreferrer" className="text-primary-600 hover:underline">{children}</a>
+    },
+    // Style other elements
+    ul: ({ children }: any) => <ul className="list-disc pl-4 mb-4 space-y-1">{children}</ul>,
+    ol: ({ children }: any) => <ol className="list-decimal pl-4 mb-4 space-y-1">{children}</ol>,
+    li: ({ children }: any) => <li className="mb-1">{children}</li>,
+    h1: ({ children }: any) => <h1 className="text-2xl font-bold mb-4">{children}</h1>,
+    h2: ({ children }: any) => <h2 className="text-xl font-bold mb-3">{children}</h2>,
+    h3: ({ children }: any) => <h3 className="text-lg font-bold mb-2">{children}</h3>,
+    code: ({ inline, className, children, ...props }: any) => {
+      if (inline) {
+        return <code className="bg-neutral-100 dark:bg-gray-800 rounded px-1 py-0.5 text-sm font-mono" {...props}>{children}</code>
+      }
+      return (
+        <code className="block bg-neutral-100 dark:bg-gray-800 rounded-lg p-3 text-sm font-mono overflow-x-auto mb-4" {...props}>
+          {children}
+        </code>
+      )
+    },
+    table: ({ children }: any) => <div className="overflow-x-auto mb-4"><table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">{children}</table></div>,
+    th: ({ children }: any) => <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50 dark:bg-gray-800/50">{children}</th>,
+    td: ({ children }: any) => <td className="px-3 py-2 whitespace-nowrap text-sm border-t border-gray-100 dark:border-gray-800">{children}</td>,
   }
 
   if (isUser) {
@@ -90,12 +114,14 @@ export default function MessageBubble({ message, onCitationClick }: MessageBubbl
           )}
 
           <div className="prose prose-neutral dark:prose-invert max-w-none">
-            <p className="text-[15px] leading-relaxed text-neutral-900 dark:text-gray-100 whitespace-pre-wrap break-words m-0">
-              {renderContent(message.content, message.sources)}
-              {message.isStreaming && (
-                <span className="inline-block w-1.5 h-4 ml-1 bg-primary-600 dark:bg-primary-500 animate-pulse"></span>
-              )}
-            </p>
+            <div className="text-[15px] leading-relaxed text-neutral-900 dark:text-gray-100 break-words m-0">
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                components={components}
+              >
+                {preprocessContent(message.content) + (message.isStreaming ? ' \u258B' : '')}
+              </ReactMarkdown>
+            </div>
           </div>
 
           {/* Sources Section */}

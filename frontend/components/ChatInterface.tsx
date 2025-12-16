@@ -157,9 +157,9 @@ export default function ChatInterface() {
                   </div>
                   <div className="grid grid-cols-1 gap-3 mt-8">
                     {[
-                      'Summarize the key findings',
-                      'What are the main topics?',
-                      'Show me important statistics',
+                      'What is machine learning?',
+                      "Breakdown of Oracle's revenue",
+                      "Define the cash conversion cycle"
                     ].map((suggestion) => (
                       <button
                         key={suggestion}

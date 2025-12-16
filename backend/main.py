@@ -611,6 +611,16 @@ async def chat_stream(request: ChatRequest):
                 # Small delay to prevent overwhelming the client
                 await asyncio.sleep(0.01)
             
+            # Mark generating_response as complete
+            yield {
+                "event": "message",
+                "data": json.dumps({
+                    "type": "tool_call",
+                    "name": "generating_response",
+                    "status": "complete"
+                })
+            }
+            
             # Send completion event
             yield {
                 "event": "message",

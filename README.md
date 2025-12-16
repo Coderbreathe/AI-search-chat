@@ -69,6 +69,7 @@ Server streams events:
 12. done → Stream complete
 ```
 
+
 ## 🚀 Setup Instructions
 
 ### Prerequisites
